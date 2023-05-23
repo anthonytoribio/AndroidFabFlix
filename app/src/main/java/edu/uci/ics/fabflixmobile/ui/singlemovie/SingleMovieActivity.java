@@ -1,5 +1,6 @@
-package edu.uci.ics.fabflixmobile.ui.movielist;
+package edu.uci.ics.fabflixmobile.ui.singlemovie;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.widget.ListView;
@@ -17,18 +18,20 @@ import com.android.volley.toolbox.StringRequest;
 import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
+import edu.uci.ics.fabflixmobile.ui.movielist.MovieListViewAdapter;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MovieListActivity extends AppCompatActivity {
+public class SingleMovieActivity extends AppCompatActivity {
 
     /*
-      In Android, localhost is the address of the device or the emulator.
-      To connect to your machine, you need to use the below IP address
-     */
+    In Android, localhost is the address of the device or the emulator.
+    To connect to your machine, you need to use the below IP address
+    */
+
     private final String host = "10.0.2.2";
     private final String port = "8080";
     private final String domain = "FabFlix";
@@ -40,45 +43,42 @@ public class MovieListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movielist);
         // TODO: this should be retrieved from the backend server
         Intent intent = getIntent();
-        String payload = intent.getStringExtra("payload");
-        Log.d("MovieListActivity", "payload is: " + payload);
-        getMovies(payload);
+        String movieId = intent.getStringExtra("id");
+        Log.d("SingleMovieActivity", "Selected movie's id: " + movieId);
+        getMovieInfo(movieId);
 
-        final ArrayList<Movie> movies = new ArrayList<>();
-        movies.add(new Movie("The Terminal", (short) 2004));
-        movies.add(new Movie("The Final Season", (short) 2007));
-        MovieListViewAdapter adapter = new MovieListViewAdapter(this, movies);
-        ListView listView = findViewById(R.id.list);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Movie movie = movies.get(position);
-            @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            
-        });
+//        final ArrayList<Movie> movies = new ArrayList<>();
+//        movies.add(new Movie("The Terminal", (short) 2004));
+//        movies.add(new Movie("The Final Season", (short) 2007));
+//        MovieListViewAdapter adapter = new MovieListViewAdapter(this, movies);
+//        ListView listView = findViewById(R.id.list);
+//        listView.setAdapter(adapter);
+//        listView.setOnItemClickListener((parent, view, position, id) -> {
+//            Movie movie = movies.get(position);
+//            @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
+//            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+//        });
     }
 
     @SuppressLint("SetTextI18n")
-    public void getMovies(String query) {
+    public void getMovieInfo(String movieId) {
 
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
-        Log.d("MovieListActivity", query);
-
-        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=25&offset=0", query);
+        Log.d("SingleMovieActivity", movieId);
 
         // request type is GET
         final StringRequest movieRequest = new StringRequest(
                 Request.Method.GET,
-                baseURL + "/api/movies-list" + urlParams,
+                baseURL + "/api/single-movie?id=" + movieId,
                 response -> {
                     //Parse the json response
                     JSONObject jsonResponse;
-                    Log.d("MovieListActivity", response);
+                    Log.d("SingleMovieActivity jsonResponse: ", response);
 
                 },
                 error -> {
                     // error
-                    Log.d("MovieListActivity", error.toString());
+                    Log.d("SingleMovieActivity GET Error: ", error.toString());
                 }) {
         };
         queue.add(movieRequest);
