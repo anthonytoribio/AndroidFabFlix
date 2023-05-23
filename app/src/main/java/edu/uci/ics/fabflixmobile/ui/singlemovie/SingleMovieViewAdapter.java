@@ -14,16 +14,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class SingleMovieViewAdapter extends ArrayAdapter<Movie> {
+//    private final ArrayList<Movie> movies;
     private final ArrayList<Movie> movies;
 
     // View lookup cache
     private static class ViewHolder {
-        TextView title;
-        TextView subtitle;
+        TextView movieTitle;
+        TextView movieYear;
+        TextView movieRating;
+        TextView movieDirector;
+        TextView movieGenres;
+        TextView movieStars;
+
     }
 
     public SingleMovieViewAdapter(Context context, ArrayList<Movie> movies) {
-        super(context, R.layout.movielist_row, movies);
+        super(context, R.layout.singlemovie_row, movies);
         this.movies = movies;
     }
 
@@ -39,8 +45,12 @@ public class SingleMovieViewAdapter extends ArrayAdapter<Movie> {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.singlemovie_row, parent, false);
-            viewHolder.title = convertView.findViewById(R.id.title);
-            viewHolder.subtitle = convertView.findViewById(R.id.subtitle);
+            viewHolder.movieTitle = convertView.findViewById(R.id.movieTitle);
+            viewHolder.movieYear = convertView.findViewById(R.id.movieYear);
+            viewHolder.movieRating = convertView.findViewById(R.id.movieRating);
+            viewHolder.movieDirector = convertView.findViewById(R.id.movieDirector);
+            viewHolder.movieGenres = convertView.findViewById(R.id.movieGenres);
+            viewHolder.movieStars = convertView.findViewById(R.id.movieStars);
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
         } else {
@@ -49,8 +59,12 @@ public class SingleMovieViewAdapter extends ArrayAdapter<Movie> {
         }
         // Populate the data from the data object via the viewHolder object
         // into the template view.
-        viewHolder.title.setText(movie.getName());
-        viewHolder.subtitle.setText(movie.getYear() + "");
+        viewHolder.movieTitle.setText(movie.getName());
+        viewHolder.movieYear.setText(movie.getYear() + "");
+//        viewHolder.movieRating.setText(movie.get + "");
+        viewHolder.movieDirector.setText(movie.getDirector() + "");
+        viewHolder.movieGenres.setText(movie.getGenresString() + "");
+        viewHolder.movieStars.setText(movie.getActorsString() + "");
         // Return the completed view to render on screen
         return convertView;
     }

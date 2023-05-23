@@ -40,12 +40,13 @@ public class SingleMovieActivity extends AppCompatActivity {
     private final String domain = "FabFlix";
     private final String baseURL = "http://" + host + ":" + port + "/" + domain;
 
-    private Movie movie;
+//    private Movie movie;
+    private ArrayList<Movie> Movies = new ArrayList<Movie>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movielist);
+        setContentView(R.layout.activity_singlemovie);
         // TODO: this should be retrieved from the backend server
         Intent intent = getIntent();
         String movieId = intent.getStringExtra("id");
@@ -82,16 +83,21 @@ public class SingleMovieActivity extends AppCompatActivity {
 
     public void createMovie(String jsonString) {
 
+        JSONArray array = new JSONArray();
+        JSONObject object = new JSONObject();
         //Get the json array
-        JSONArray jsonResponse = new JSONArray();
         try {
-            jsonResponse = new JSONArray(jsonString);
+
+            array = new JSONArray(jsonString);
+            object = array.getJSONObject(0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+
+
         try {
-            JSONObject object = jsonResponse.getJSONObject(0);
+
             Log.d("SingleMovieActivity", "The Json object is :" + object );
 
             String title = object.getString("movie_title");
@@ -100,7 +106,9 @@ public class SingleMovieActivity extends AppCompatActivity {
             String director = object.getString("director");
             ArrayList<String> genres = new ArrayList<>(Arrays.asList(object.getString("genres").split(",")));
             ArrayList<String> actors = new ArrayList<>(Arrays.asList(object.getString("starNames").split(",")));
-            movie = new Movie(title, id, year, director, genres, actors);
+            Movie movie = new Movie(title, id, year, director, genres, actors);
+            Movies.add(movie);
+            Log.d("SingleMovieActivity", "Movies after adding movie is: " + Movies);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,6 +117,10 @@ public class SingleMovieActivity extends AppCompatActivity {
     }
 
     public void updatePageView() {
+        Log.d("SingleMovieActivity","Movies is: " + Movies);
+        SingleMovieViewAdapter adapter = new SingleMovieViewAdapter(this, Movies);
+        ListView listView = findViewById(R.id.singlemovielist);
+        listView.setAdapter(adapter);
 
     }
 }
