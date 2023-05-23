@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Intent MovieListPage = new Intent(MainActivity.this, MovieListActivity.class);
         MovieListPage.putExtra("payload", searchText.getText().toString());
 
-        finish();
+//        finish();
         startActivity(MovieListPage);
 
     }
