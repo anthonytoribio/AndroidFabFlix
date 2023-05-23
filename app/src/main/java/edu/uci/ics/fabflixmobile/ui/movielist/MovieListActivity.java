@@ -69,7 +69,7 @@ public class MovieListActivity extends AppCompatActivity {
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         Log.d("MovieListActivity", query);
 
-        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=25&offset=%d", query, offset);
+        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=20&offset=%d", query, offset);
 
         // request type is GET
         final StringRequest movieRequest = new StringRequest(
@@ -131,6 +131,8 @@ public class MovieListActivity extends AppCompatActivity {
             Movie movie = Movies.get(position);
             @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            //TODO: Create an intent and pass movie_id to SingleMoviePage Activity
+
 //            Intent SingleMoviePage = new Intent(MovieListActivity.this)
         });
     }
