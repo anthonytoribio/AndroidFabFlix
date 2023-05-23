@@ -18,6 +18,7 @@ import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
 import edu.uci.ics.fabflixmobile.ui.main.MainActivity;
+import edu.uci.ics.fabflixmobile.ui.singlemovie.SingleMovieActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -133,7 +134,9 @@ public class MovieListActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             //TODO: Create an intent and pass movie_id to SingleMoviePage Activity
 
-//            Intent SingleMoviePage = new Intent(MovieListActivity.this)
+            Intent SingleMoviePage = new Intent(MovieListActivity.this, SingleMovieActivity.class);
+            SingleMoviePage.putExtra("id", movie.getId());
+            startActivity(SingleMoviePage);
         });
     }
 

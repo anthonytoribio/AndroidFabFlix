@@ -19,9 +19,12 @@ import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
 import edu.uci.ics.fabflixmobile.ui.movielist.MovieListViewAdapter;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +40,8 @@ public class SingleMovieActivity extends AppCompatActivity {
     private final String domain = "FabFlix";
     private final String baseURL = "http://" + host + ":" + port + "/" + domain;
 
+    private Movie movie;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,18 +51,6 @@ public class SingleMovieActivity extends AppCompatActivity {
         String movieId = intent.getStringExtra("id");
         Log.d("SingleMovieActivity", "Selected movie's id: " + movieId);
         getMovieInfo(movieId);
-
-//        final ArrayList<Movie> movies = new ArrayList<>();
-//        movies.add(new Movie("The Terminal", (short) 2004));
-//        movies.add(new Movie("The Final Season", (short) 2007));
-//        MovieListViewAdapter adapter = new MovieListViewAdapter(this, movies);
-//        ListView listView = findViewById(R.id.list);
-//        listView.setAdapter(adapter);
-//        listView.setOnItemClickListener((parent, view, position, id) -> {
-//            Movie movie = movies.get(position);
-//            @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
-//            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-//        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -88,6 +81,30 @@ public class SingleMovieActivity extends AppCompatActivity {
     }
 
     public void createMovie(String jsonString) {
+
+        //Get the json array
+        JSONArray jsonResponse = new JSONArray();
+        try {
+            jsonResponse = new JSONArray(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONObject object = jsonResponse.getJSONObject(0);
+            Log.d("SingleMovieActivity", "The Json object is :" + object );
+
+            String title = object.getString("movie_title");
+            String id = object.getString("movie_id");
+            Short year = Short.parseShort(object.getString("release_year"));
+            String director = object.getString("director");
+            ArrayList<String> genres = new ArrayList<>(Arrays.asList(object.getString("genres").split(",")));
+            ArrayList<String> actors = new ArrayList<>(Arrays.asList(object.getString("starNames").split(",")));
+            movie = new Movie(title, id, year, director, genres, actors);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
