@@ -7,15 +7,20 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.databinding.ActivityLoginBinding;
+import edu.uci.ics.fabflixmobile.ui.main.MainActivity;
 import edu.uci.ics.fabflixmobile.ui.movielist.MovieListActivity;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private final String host = "10.0.2.2";
     private final String port = "8080";
-    private final String domain = "cs122b_project2_login_cart_example_war";
+    private final String domain = "FabFlix";
     private final String baseURL = "http://" + host + ":" + port + "/" + domain;
 
     @Override
@@ -55,19 +60,44 @@ public class LoginActivity extends AppCompatActivity {
         // use the same network queue across our application
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         // request type is POST
+
+        Log.d("login check","BASE URL IS: " +  baseURL);
         final StringRequest loginRequest = new StringRequest(
                 Request.Method.POST,
                 baseURL + "/api/login",
                 response -> {
-                    // TODO: should parse the json response to redirect to appropriate functions
-                    //  upon different response value.
+
+                    //Parse string json response
+                    JSONObject jsonResponse;
+                    String status = "";
+                    String message = "";
+                    try {
+                        jsonResponse = new JSONObject(response);
+                        status = jsonResponse.getString("status");
+                        message = jsonResponse.getString("message");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    //Check if the login status is 'fail' and if so return
+                    if (status.equals("fail")) {
+                        //TODO SET MESSAGE WHEN FAILED (textfield)
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     Log.d("login.success", response);
                     //Complete and destroy login activity once successful
                     finish();
                     // initialize the activity(page)/destination
-                    Intent MovieListPage = new Intent(LoginActivity.this, MovieListActivity.class);
+                    //Intent MovieListPage = new Intent(LoginActivity.this, MovieListActivity.class);
                     // activate the list page.
-                    startActivity(MovieListPage);
+                    //startActivity(MovieListPage);
+
+
+                    Intent MainPage = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(MainPage);
+
                 },
                 error -> {
                     // error
