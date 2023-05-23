@@ -61,7 +61,7 @@ public class SingleMovieViewAdapter extends ArrayAdapter<Movie> {
         // into the template view.
         viewHolder.movieTitle.setText(movie.getName());
         viewHolder.movieYear.setText(movie.getYear() + "");
-//        viewHolder.movieRating.setText(movie.get + "");
+        viewHolder.movieRating.setText(movie.getRating() + "");
         viewHolder.movieDirector.setText(movie.getDirector() + "");
         viewHolder.movieGenres.setText(movie.getGenresString() + "");
         viewHolder.movieStars.setText(movie.getActorsString() + "");

@@ -103,10 +103,11 @@ public class SingleMovieActivity extends AppCompatActivity {
             String title = object.getString("movie_title");
             String id = object.getString("movie_id");
             Short year = Short.parseShort(object.getString("release_year"));
+            String rating = object.getString("rating");
             String director = object.getString("director");
             ArrayList<String> genres = new ArrayList<>(Arrays.asList(object.getString("genres").split(",")));
             ArrayList<String> actors = new ArrayList<>(Arrays.asList(object.getString("starNames").split(",")));
-            Movie movie = new Movie(title, id, year, director, genres, actors);
+            Movie movie = new Movie(title, id, rating, year, director, genres, actors);
             Movies.add(movie);
             Log.d("SingleMovieActivity", "Movies after adding movie is: " + Movies);
 
