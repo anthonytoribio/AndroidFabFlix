@@ -18,7 +18,6 @@ import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
 import edu.uci.ics.fabflixmobile.ui.main.MainActivity;
-import edu.uci.ics.fabflixmobile.ui.singlemovie.SingleMovieActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,7 +69,7 @@ public class MovieListActivity extends AppCompatActivity {
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         Log.d("MovieListActivity", query);
 
-        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=25&offset=%d", query, offset);
+        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=20&offset=%d", query, offset);
 
         // request type is GET
         final StringRequest movieRequest = new StringRequest(
@@ -132,8 +131,9 @@ public class MovieListActivity extends AppCompatActivity {
             Movie movie = Movies.get(position);
             @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            Intent SingleMoviePage = new Intent(MovieListActivity.this, SingleMovieActivity.class);
-            SingleMoviePage.putExtra("id", movie.getId());
+            //TODO: Create an intent and pass movie_id to SingleMoviePage Activity
+
+//            Intent SingleMoviePage = new Intent(MovieListActivity.this)
         });
     }
 
