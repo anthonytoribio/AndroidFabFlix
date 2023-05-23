@@ -75,6 +75,9 @@ public class SingleMovieActivity extends AppCompatActivity {
                     JSONObject jsonResponse;
                     Log.d("SingleMovieActivity jsonResponse: ", response);
 
+                    createMovie(response);
+                    updatePageView();
+
                 },
                 error -> {
                     // error
@@ -82,5 +85,13 @@ public class SingleMovieActivity extends AppCompatActivity {
                 }) {
         };
         queue.add(movieRequest);
+    }
+
+    public void createMovie(String jsonString) {
+
+    }
+
+    public void updatePageView() {
+
     }
 }

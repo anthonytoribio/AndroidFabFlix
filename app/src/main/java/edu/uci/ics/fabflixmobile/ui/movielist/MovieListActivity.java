@@ -18,6 +18,7 @@ import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
 import edu.uci.ics.fabflixmobile.ui.main.MainActivity;
+import edu.uci.ics.fabflixmobile.ui.singlemovie.SingleMovieActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,7 +132,8 @@ public class MovieListActivity extends AppCompatActivity {
             Movie movie = Movies.get(position);
             @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-//            Intent SingleMoviePage = new Intent(MovieListActivity.this)
+            Intent SingleMoviePage = new Intent(MovieListActivity.this, SingleMovieActivity.class);
+            SingleMoviePage.putExtra("id", movie.getId());
         });
     }
 
