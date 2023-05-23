@@ -13,16 +13,19 @@ public class Movie {
 
     private final String director;
 
+    private final String rating;
+
     private final ArrayList<String> genres;
 
     private  final ArrayList<String> actors;
 
 
-    public Movie(String name, String id, short year, String director, ArrayList<String> genres, ArrayList<String> actors) {
+    public Movie(String name, String id, String rating, short year, String director, ArrayList<String> genres, ArrayList<String> actors) {
         this.name = name;
         this.id = id;
         this.year = year;
         this.director = director;
+        this.rating = rating;
         this.genres = genres;
         this.actors = actors;
 
@@ -43,6 +46,10 @@ public class Movie {
 
     public String getDirector() {
         return director;
+    }
+
+    public String getRating() {
+        return rating;
     }
 
     public String getGenresString() {

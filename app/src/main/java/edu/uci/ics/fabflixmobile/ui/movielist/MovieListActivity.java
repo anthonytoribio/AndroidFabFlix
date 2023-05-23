@@ -2,6 +2,8 @@ package edu.uci.ics.fabflixmobile.ui.movielist;
 
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.Intent;
@@ -41,15 +43,36 @@ public class MovieListActivity extends AppCompatActivity {
     private Integer offset = 0;
     private ArrayList<Movie> Movies;
 
+    private String payload;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movielist);
         // TODO: this should be retrieved from the backend server
         Intent intent = getIntent();
-        String payload = intent.getStringExtra("payload");
+        payload = intent.getStringExtra("payload");
         Log.d("MovieListActivity", "payload is: " + payload);
         getMovies(payload, offset);
+
+        Button prev = (Button) findViewById(R.id.prev);
+        Button next = (Button) findViewById(R.id.next);
+
+        //Set the on click listeners
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPrev();
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNext();
+            }
+        });
+
 
 //        final ArrayList<Movie> movies = new ArrayList<>();
 //        movies.add(new Movie("The Terminal", (short) 2004));
@@ -69,8 +92,11 @@ public class MovieListActivity extends AppCompatActivity {
 
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         Log.d("MovieListActivity", query);
+        Log.d("MovieListActivity", "The offset is " + offset);
 
-        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=20&offset=%d", query, offset);
+        Integer qOffset = offset * 20;
+
+        String urlParams = String.format("?fullSearch=true&payload=%s&pageNum=1&sort1=Rating&sortOption1=DESC&numResults=20&offset=%d", query, qOffset);
 
         // request type is GET
         final StringRequest movieRequest = new StringRequest(
@@ -90,7 +116,12 @@ public class MovieListActivity extends AppCompatActivity {
 
     public void createArray(String jsonString) {
         Log.d("MovieListActivity", jsonString);
-        Movies = new ArrayList<Movie>();
+
+        //Check that we get results string
+        if (jsonString.isEmpty()) {
+            offset--;
+            return;
+        }
 
         //Get the json array
         JSONArray jsonResponse = new JSONArray();
@@ -103,6 +134,13 @@ public class MovieListActivity extends AppCompatActivity {
         //Log the array length
         Log.d("MovieListActivity", "The Length of Json Response is " + jsonResponse.length());
 
+        //Check that we get results, if results lenhth is 0 then return and do not change
+        if (jsonResponse.length() == 0) {
+            offset--;
+            return;
+        }
+        Movies = new ArrayList<Movie>();
+
         // for each json object in array make a Movie object and append to Movies array
         for (Integer i = 0; i < jsonResponse.length(); i++) {
             try {
@@ -111,11 +149,12 @@ public class MovieListActivity extends AppCompatActivity {
 
                 String title = object.getString("movie_title");
                 String id = object.getString("movie_id");
+                String rating = Double.toString(object.getDouble("rating"));
                 Short year = Short.parseShort(object.getString("release_year"));
                 String director = object.getString("director");
                 ArrayList<String> genres = new ArrayList<>(Arrays.asList(object.getString("genres").split(",")));
                 ArrayList<String> actors = new ArrayList<>(Arrays.asList(object.getString("starNames").split(",")));
-                Movie movie = new Movie(title, id, year, director, genres, actors);
+                Movie movie = new Movie(title, id, rating, year, director, genres, actors);
                 Movies.add(movie);
 
             } catch (JSONException e) {
@@ -138,6 +177,19 @@ public class MovieListActivity extends AppCompatActivity {
             SingleMoviePage.putExtra("id", movie.getId());
             startActivity(SingleMoviePage);
         });
+    }
+
+    public void onPrev() {
+        if (offset == 0) {
+            return;
+        }
+        offset--;
+        getMovies(payload, offset);
+    }
+
+    public void onNext() {
+        offset++;
+        getMovies(payload, offset);
     }
 
 }
